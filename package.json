@@ -1,0 +1,19 @@
+{
+  "name": "fib-driver",
+  "version": "1.0.0",
+  "description": "A driver for manipulating GUI elements based on the `gui` module in `fibjs`. It provides extended functionalities to make GUI element manipulation more convenient.",
+  "main": "lib",
+  "repository": "https://github.com/fibjs/fib-driver",
+  "keywords": [
+    "fibjs",
+    "web",
+    "driver",
+    "simulator",
+    "webdriver"
+  ],
+  "author": "Liu Hu <lion@9465.net>",
+  "license": "ISC",
+  "publishConfig": {
+    "access": "public"
+  }
+}
