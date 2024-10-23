@@ -30,12 +30,13 @@ Queries the window for the first element matching the selector.
 
 - selector (string): CSS selector.
 
-## Element Properties
+### Element Properties
 
 `fib-driver` extends the following element properties:
 
 - alt
 - checked
+- childElementCount
 - className
 - clientHeight
 - clientLeft
@@ -67,12 +68,15 @@ Queries the window for the first element matching the selector.
 - textContent
 - title
 - value
-- Element Objects
+
+### Element Objects
 
 `fib-driver` extends the following element objects:
 
+- attributes
 - children
 - childNodes
+- classList
 - firstChild
 - firstElementChild
 - lastChild
@@ -83,22 +87,30 @@ Queries the window for the first element matching the selector.
 - parentElement
 - previousElementSibling
 - previousSibling
-- Element Methods
+
+### Element Methods
 
 `fib-driver` extends the following element methods:
 
 - blur()
 - click()
+- compareDocumentPosition()
 - contains()
 - focus()
 - getAttribute()
+- getAttributeNames()
 - hasAttribute()
+- hasAttributes()
 - insertAdjacentHTML()
 - insertAdjacentText()
 - remove()
 - removeAttribute()
+- removeChild()
 - reset()
+- scroll()
 - scrollIntoView()
+- scrollIntoViewIfNeeded()
+- scrollTo()
 - select()
 - setAttribute()
 - submit()
