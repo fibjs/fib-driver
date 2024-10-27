@@ -11,7 +11,8 @@ describe('WebView extended tests', function () {
     before(function () {
         win = gui.open({
             width: 400,
-            height: 300
+            height: 300,
+            visible: false
         });
     });
 
@@ -24,62 +25,169 @@ describe('WebView extended tests', function () {
         coroutine.sleep(100);
     });
 
+    it('should use querySelectorAll to get elements', function () {
+        win.setHtml(`<div class='test'></div><div class='test'></div>`);
+        coroutine.sleep(100);
+        const elements = win.querySelectorAll(".test");
+        assert.equal(elements.length, 2);
+        assert.equal(elements[0].className, 'test');
+        assert.equal(elements[1].className, 'test');
+    });
+
+    it('should use forEach to iterate over elements', function () {
+        win.setHtml(`<div class='test' id='test1'></div><div class='test' id='test2'></div>`);
+        coroutine.sleep(100);
+        const elements = win.querySelectorAll(".test");
+        assert.equal(elements.length, 2);
+
+        elements.forEach((element, index) => {
+            assert.equal(element.className, 'test');
+            assert.equal(element.id, elements[index].id);
+        });
+    });
+
+    it('should use querySelectorAll and map to get class names', function () {
+        win.setHtml(`<div class='test'></div><div class='test'></div>`);
+        coroutine.sleep(100);
+        const elements = win.querySelectorAll(".test");
+        const classNames = elements.map(el => el.className);
+        assert.deepEqual(classNames, ['test', 'test']);
+    });
+
+
+    it('should use querySelectorAll and filter to get specific elements', function () {
+        win.setHtml(`<div class='test' id='test1'></div><div class='test' id='test2'></div>`);
+        coroutine.sleep(100);
+        const elements = win.querySelectorAll(".test");
+        const filteredElements = elements.filter(el => el.id === 'test1');
+        assert.equal(filteredElements.length, 1);
+        assert.equal(filteredElements[0].id, 'test1');
+    });
+
+    it('should use querySelectorAll and reduce to concatenate IDs', function () {
+        win.setHtml(`<div class='test' id='test1'></div><div class='test' id='test2'></div>`);
+        coroutine.sleep(100);
+        const elements = win.querySelectorAll(".test");
+        const concatenatedIds = elements.reduce((acc, el) => acc + el.id, '');
+        assert.equal(concatenatedIds, 'test1test2');
+    });
+
+    it('should use querySelectorAll and some to check for a specific class', function () {
+        win.setHtml(`<div class='test'></div><div class='test special'></div>`);
+        coroutine.sleep(100);
+        const elements = win.querySelectorAll(".test");
+        const hasSpecialClass = elements.some(el => el.classList.contains('special'));
+        assert.equal(hasSpecialClass, true);
+    });
+
+    it('should use querySelectorAll and every to check all elements have a class', function () {
+        win.setHtml(`<div class='test'></div><div class='test'></div>`);
+        coroutine.sleep(100);
+        const elements = win.querySelectorAll(".test");
+        const allHaveTestClass = elements.every(el => el.classList.contains('test'));
+        assert.equal(allHaveTestClass, true);
+    });
+
+    it('should use getElementById to get an element', function () {
+        win.setHtml(`<div id='test'></div>`);
+        coroutine.sleep(100);
+        const element = win.getElementById("test");
+        assert.equal(element.id, 'test');
+    });
+
+    it('should use getElementsByClassName to get elements', function () {
+        win.setHtml(`<div class='test'></div><div class='test'></div>`);
+        coroutine.sleep(100);
+        const elements = win.getElementsByClassName("test");
+        assert.equal(elements.length, 2);
+        assert.equal(elements[0].className, 'test');
+        assert.equal(elements[1].className, 'test');
+    });
+
+    it('should use getElementsByTagName to get elements', function () {
+        win.setHtml(`<div></div><div></div>`);
+        coroutine.sleep(100);
+        const elements = win.getElementsByTagName("div");
+        assert.equal(elements.length, 2);
+        assert.equal(elements[0].tagName, 'DIV');
+        assert.equal(elements[1].tagName, 'DIV');
+    });
+
+    it('should use getElementsByName to get elements', function () {
+        win.setHtml(`<input name='test'><input name='test'>`);
+        coroutine.sleep(100);
+        const elements = win.getElementsByName("test");
+        assert.equal(elements.length, 2);
+        assert.equal(elements[0].name, 'test');
+        assert.equal(elements[1].name, 'test');
+    });
+
     it('should get offsetHeight', function () {
         win.setHtml(`<div id='test' style='height: 100px;'></div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         assert.equal(el.offsetHeight, 100);
     });
 
     it('should get offsetLeft', function () {
         win.setHtml(`<div id='test' style='position: absolute; left: 50px;'></div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         assert.equal(el.offsetLeft, 50);
     });
 
     it('should get offsetTop', function () {
         win.setHtml(`<div id='test' style='position: absolute; top: 50px;'></div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         assert.equal(el.offsetTop, 50);
     });
 
     it('should get offsetWidth', function () {
         win.setHtml(`<div id='test' style='width: 100px;'></div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         assert.equal(el.offsetWidth, 100);
     });
 
     it('should get clientHeight', function () {
         win.setHtml(`<div id='test' style='height: 100px;'></div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         assert.equal(el.clientHeight, 100);
     });
 
     it('should get clientLeft', function () {
         win.setHtml(`<div id='test' style='border-left: 10px solid;'></div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         assert.equal(el.clientLeft, 10);
     });
 
     it('should get clientTop', function () {
         win.setHtml(`<div id='test' style='border-top: 10px solid;'></div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         assert.equal(el.clientTop, 10);
     });
 
     it('should get clientWidth', function () {
         win.setHtml(`<div id='test' style='width: 100px;'></div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         assert.equal(el.clientWidth, 100);
     });
 
     it('should get scrollHeight', function () {
         win.setHtml(`<div id='test' style='height: 50px; overflow: auto;'><div style='height: 100px;'></div></div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         assert.equal(el.scrollHeight, 100);
     });
 
     todo('should get and set scrollLeft', function () {
         win.setHtml(`<div id='test' style='width: 50px; overflow: auto;'><div style='width: 100px;'></div></div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         el.scrollLeft = 10;
         assert.equal(el.scrollLeft, 10);
@@ -87,6 +195,7 @@ describe('WebView extended tests', function () {
 
     it('should get and set scrollTop', function () {
         win.setHtml(`<div id='test' style='height: 50px; overflow: auto;'><div style='height: 100px;'></div></div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         el.scrollTop = 10;
         assert.equal(el.scrollTop, 10);
@@ -94,6 +203,7 @@ describe('WebView extended tests', function () {
 
     it('should get and set classList', function () {
         win.setHtml(`<div id='test' class='foo bar'></div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         assert.equal(el.classList.contains('foo'), true);
         assert.equal(el.classList.contains('bar'), true);
@@ -105,6 +215,7 @@ describe('WebView extended tests', function () {
 
     it('should get and set className', function () {
         win.setHtml(`<div id='test' class='foo bar'></div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         assert.equal(el.className, 'foo bar');
         el.className = 'baz qux';
@@ -113,6 +224,7 @@ describe('WebView extended tests', function () {
 
     it('should get and set innerText', function () {
         win.setHtml(`<div id='test'>Hello World</div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         assert.equal(el.innerText, 'Hello World');
         el.innerText = 'New Text';
@@ -121,6 +233,7 @@ describe('WebView extended tests', function () {
 
     it('should cross-check innerText and innerHTML', function () {
         win.setHtml(`<div id='test'>Hello <span>World</span></div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         assert.equal(el.innerText, 'Hello World');
         assert.equal(el.innerHTML, 'Hello <span>World</span>');
@@ -134,6 +247,7 @@ describe('WebView extended tests', function () {
 
     it('should get and set innerHTML', function () {
         win.setHtml(`<div id='test'>Hello World</div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         assert.equal(el.innerHTML, 'Hello World');
         el.innerHTML = 'New HTML';
@@ -142,6 +256,7 @@ describe('WebView extended tests', function () {
 
     it('should get and set outerHTML', function () {
         win.setHtml(`<div id='test'>Hello World</div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         assert.equal(el.outerHTML, `<div id="test">Hello World</div>`);
         el.outerHTML = `<div id='test'>New HTML</div>`;
@@ -151,6 +266,7 @@ describe('WebView extended tests', function () {
 
     it('should cross-check innerHTML and outerHTML', function () {
         win.setHtml(`<div id='test'><span>Initial</span> Content</div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
 
         assert.equal(el.innerHTML, '<span>Initial</span> Content');
@@ -168,6 +284,7 @@ describe('WebView extended tests', function () {
 
     it('should insert HTML at specified position', function () {
         win.setHtml(`<div id='test'><span>Original</span></div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
 
         el.insertAdjacentHTML('beforebegin', '<div id="beforebegin">Before Begin</div>');
@@ -185,6 +302,7 @@ describe('WebView extended tests', function () {
 
     it('should get previousSibling and nextSibling', function () {
         win.setHtml(`<div id='first'></div><div id='second'></div><div id='third'></div>`);
+        coroutine.sleep(100);
         const first = win.querySelector("#first");
         const second = win.querySelector("#second");
         const third = win.querySelector("#third");
@@ -195,6 +313,7 @@ describe('WebView extended tests', function () {
 
     it('should get parentNode', function () {
         win.setHtml(`<div id='parent'><div id='child'></div></div>`);
+        coroutine.sleep(100);
         const parent = win.querySelector("#parent");
         const child = win.querySelector("#child");
 
@@ -203,6 +322,7 @@ describe('WebView extended tests', function () {
 
     it('should get firstChild and lastChild', function () {
         win.setHtml(`<div id='parent'><div id='first'></div><div id='last'></div></div>`);
+        coroutine.sleep(100);
         const parent = win.querySelector("#parent");
         const first = win.querySelector("#first");
         const last = win.querySelector("#last");
@@ -213,6 +333,7 @@ describe('WebView extended tests', function () {
 
     it('should get firstElementChild and lastElementChild', function () {
         win.setHtml(`<div id='parent'><div id='first'></div><div id='last'></div></div>`);
+        coroutine.sleep(100);
         const parent = win.querySelector("#parent");
         const first = win.querySelector("#first");
         const last = win.querySelector("#last");
@@ -223,6 +344,7 @@ describe('WebView extended tests', function () {
 
     it('should get nextElementSibling and previousElementSibling', function () {
         win.setHtml(`<div id='first'></div><div id='second'></div><div id='third'></div>`);
+        coroutine.sleep(100);
         const first = win.querySelector("#first");
         const second = win.querySelector("#second");
         const third = win.querySelector("#third");
@@ -233,6 +355,7 @@ describe('WebView extended tests', function () {
 
     it('should remove an element from the DOM', function () {
         win.setHtml(`<div id='parent'><div id='child'>Child</div></div>`);
+        coroutine.sleep(100);
         const parent = win.querySelector("#parent");
         const child = win.querySelector("#child");
 
@@ -245,6 +368,7 @@ describe('WebView extended tests', function () {
 
     it('should get children and childNodes', function () {
         win.setHtml(`<div id='parent'><div id='child1'></div><div id='child2'></div></div>`);
+        coroutine.sleep(100);
         const parent = win.querySelector("#parent");
         const children = parent.children;
         const childNodes = parent.childNodes;
@@ -259,6 +383,7 @@ describe('WebView extended tests', function () {
 
     it('should remove a child element from the DOM', function () {
         win.setHtml(`<div id='parent'><div id='child'>Child</div></div>`);
+        coroutine.sleep(100);
         const parent = win.querySelector("#parent");
         const child = win.querySelector("#child");
 
@@ -271,6 +396,7 @@ describe('WebView extended tests', function () {
 
     it('should check if an element contains another', function () {
         win.setHtml(`<div id='parent'><div id='child'></div></div>`);
+        coroutine.sleep(100);
         const parent = win.querySelector("#parent");
         const child = win.querySelector("#child");
 
@@ -280,6 +406,7 @@ describe('WebView extended tests', function () {
 
     it('should get the correct childElementCount', function () {
         win.setHtml(`<div id='parent'><div id='child1'></div><div id='child2'></div><div id='child3'></div></div>`);
+        coroutine.sleep(100);
         const parent = win.querySelector("#parent");
 
         assert.equal(parent.childElementCount, 3);
@@ -287,6 +414,7 @@ describe('WebView extended tests', function () {
 
     it('should compare document positions correctly', function () {
         win.setHtml(`<div id='parent'><div id='child1'></div><div id='child2'></div></div>`);
+        coroutine.sleep(100);
         const parent = win.querySelector("#parent");
         const child1 = win.querySelector("#child1");
         const child2 = win.querySelector("#child2");
@@ -306,6 +434,7 @@ describe('WebView extended tests', function () {
 
     it('should insert text at specified position', function () {
         win.setHtml(`<div id='test'><span>Original</span></div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
 
         el.insertAdjacentText('beforebegin', 'Before Begin');
@@ -323,6 +452,7 @@ describe('WebView extended tests', function () {
 
     it('should get and set name', function () {
         win.setHtml(`<input type='text' id='input' name='testName'>`);
+        coroutine.sleep(100);
         const input = win.querySelector("#input");
         assert.equal(input.name, 'testName');
         input.name = 'newName';
@@ -331,6 +461,7 @@ describe('WebView extended tests', function () {
 
     it('should get and set src', function () {
         win.setHtml(`<img id='image' src='test.jpg'>`);
+        coroutine.sleep(100);
         const img = win.querySelector("#image");
         assert.equal(img.src, 'test.jpg');
         img.src = 'new.jpg';
@@ -339,6 +470,7 @@ describe('WebView extended tests', function () {
 
     it('should get and set href', function () {
         win.setHtml(`<a id='link' href='https://www.example.com'>Example</a>`);
+        coroutine.sleep(100);
         const link = win.querySelector("#link");
         assert.equal(link.href, 'https://www.example.com/');
         link.href = 'https://www.newexample.com';
@@ -347,6 +479,7 @@ describe('WebView extended tests', function () {
 
     it('should get and set alt', function () {
         win.setHtml(`<img id='image' alt='testAlt'>`);
+        coroutine.sleep(100);
         const img = win.querySelector("#image");
         assert.equal(img.alt, 'testAlt');
         img.alt = 'newAlt';
@@ -355,6 +488,7 @@ describe('WebView extended tests', function () {
 
     it('should get and set title', function () {
         win.setHtml(`<div id='test' title='testTitle'>Hello World</div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         assert.equal(el.title, 'testTitle');
         el.title = 'newTitle';
@@ -363,6 +497,7 @@ describe('WebView extended tests', function () {
 
     it('should get and set disabled', function () {
         win.setHtml(`<button id='button' disabled>Click me</button>`);
+        coroutine.sleep(100);
         const button = win.querySelector("#button");
         assert.equal(button.disabled, true);
         button.disabled = false;
@@ -371,6 +506,7 @@ describe('WebView extended tests', function () {
 
     it('should get and set checked', function () {
         win.setHtml(`<input type='checkbox' id='checkbox' checked>`);
+        coroutine.sleep(100);
         const checkbox = win.querySelector("#checkbox");
         assert.equal(checkbox.checked, true);
         checkbox.checked = false;
@@ -379,6 +515,7 @@ describe('WebView extended tests', function () {
 
     it('should get and set selected', function () {
         win.setHtml(`<select id='select'><option id='option'>Option</option><option selected=true>Option</option></select>`);
+        coroutine.sleep(100);
         const option = win.querySelector("#option");
         assert.equal(option.selected, false);
         option.selected = true;
@@ -387,6 +524,7 @@ describe('WebView extended tests', function () {
 
     it('should get and set placeholder', function () {
         win.setHtml(`<input type='text' id='input' placeholder='Enter text'>`);
+        coroutine.sleep(100);
         const input = win.querySelector("#input");
         assert.equal(input.placeholder, 'Enter text');
         input.placeholder = 'New placeholder';
@@ -395,6 +533,7 @@ describe('WebView extended tests', function () {
 
     it('should get and set tabIndex', function () {
         win.setHtml(`<div id='test' tabindex='1'>Hello World</div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         assert.equal(el.tabIndex, 1);
         el.tabIndex = 2;
@@ -403,12 +542,14 @@ describe('WebView extended tests', function () {
 
     it('should submit form', function () {
         win.setHtml(`<form id='form'><input type='submit'></form>`);
+        coroutine.sleep(100);
         const form = win.querySelector("#form");
         assert.doesNotThrow(() => form.submit());
     });
 
     it('should reset form', function () {
         win.setHtml(`<form id='form'><input type='text' value='test'></form>`);
+        coroutine.sleep(100);
         const input = win.querySelector("input");
         input.value = 'new value';
         assert.equal(input.value, 'new value');
@@ -420,6 +561,7 @@ describe('WebView extended tests', function () {
 
     it('should select text in input', function () {
         win.setHtml(`<input type='text' id='input' value='Hello World'>`);
+        coroutine.sleep(100);
         const input = win.querySelector("#input");
         input.select();
         assert.equal(input.selectionStart, 0);
@@ -428,6 +570,7 @@ describe('WebView extended tests', function () {
 
     it('should get attributes', function () {
         win.setHtml(`<div id='test' data-custom='initial' class='test-class'></div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         const attributes = el.attributes;
         assert.equal(attributes.length, 3);
@@ -441,6 +584,7 @@ describe('WebView extended tests', function () {
 
     it('should set attribute', function () {
         win.setHtml(`<div id='test'></div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         el.setAttribute('data-custom', 'updated');
         const attributes = el.attributes;
@@ -453,6 +597,7 @@ describe('WebView extended tests', function () {
 
     it('should check attribute existence', function () {
         win.setHtml(`<div id='test' data-custom='initial'></div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         assert.equal(el.hasAttribute('data-custom'), true);
         el.removeAttribute('data-custom');
@@ -461,6 +606,7 @@ describe('WebView extended tests', function () {
 
     it('should remove attribute', function () {
         win.setHtml(`<div id='test' data-custom='initial'></div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         el.removeAttribute('data-custom');
         const attributes = el.attributes;
@@ -469,6 +615,7 @@ describe('WebView extended tests', function () {
 
     it('should check if element has attributes', function () {
         win.setHtml(`<div id='test' data-custom='initial' class='test-class'></div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("div");
         assert.equal(el.hasAttributes(), true);
         el.removeAttribute('data-custom');
@@ -480,6 +627,7 @@ describe('WebView extended tests', function () {
 
     it('should get attribute names', function () {
         win.setHtml(`<div id='test' data-custom='initial' class='test-class'></div>`);
+        coroutine.sleep(100);
         const el = win.querySelector("#test");
         const attributeNames = el.getAttributeNames();
         assert.deepEqual(attributeNames, ['id', 'data-custom', 'class']);
@@ -489,6 +637,7 @@ describe('WebView extended tests', function () {
         win.setHtml(`<div id='container' style='height: 100px; overflow: auto;'>
                         <div id='test' style='margin-top: 200px;'>Hello World</div>
                      </div>`);
+        coroutine.sleep(100);
         const container = win.querySelector("#container");
         const el = win.querySelector("#test");
         assert.equal(container.scrollTop, 0);
@@ -500,6 +649,7 @@ describe('WebView extended tests', function () {
         win.setHtml(`<div id='container' style='height: 100px; overflow: auto;'>
                         <div id='test' style='margin-top: 200px;'>Hello World</div>
                      </div>`);
+        coroutine.sleep(100);
         const container = win.querySelector("#container");
         const el = win.querySelector("#test");
         assert.equal(container.scrollTop, 0);
@@ -511,6 +661,7 @@ describe('WebView extended tests', function () {
         win.setHtml(`<div id='container' style='height: 100px; overflow: auto;'>
                         <div id='test' style='margin-top: 200px;'>Hello World</div>
                      </div>`);
+        coroutine.sleep(100);
         const container = win.querySelector("#container");
         const el = win.querySelector("#test");
         assert.equal(container.scrollTop, 0);
@@ -522,6 +673,7 @@ describe('WebView extended tests', function () {
         win.setHtml(`<div id='container' style='height: 100px; overflow: auto;'>
                         <div id='test' style='margin-top: 200px;'>Hello World</div>
                      </div>`);
+        coroutine.sleep(100);
         const container = win.querySelector("#container");
         assert.equal(container.scrollTop, 0);
         container.scrollTo(0, 200);
